@@ -11,6 +11,7 @@ namespace API.Data
     {
         public DbSet<Account> Accounts { get; set; }
         public DbSet<Company> Companies { get; set; }
+        public DbSet<Workspace> Workspaces { get; set; }
         public DbSet<Role> Roles { get; set; }
         int SaveChanges();
     }
