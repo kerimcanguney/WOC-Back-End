@@ -1,5 +1,6 @@
 using API.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using API.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -47,6 +48,7 @@ namespace API
 
             services.AddDbContext<IAccountContext, AccountContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("PIMAccounts")));
+            //services.AddSingleton<IAccountService>();//////////////////////////////
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {

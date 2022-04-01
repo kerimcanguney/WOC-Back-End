@@ -33,7 +33,7 @@ namespace API.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Workspace",
+                name: "Workspaces",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -43,9 +43,9 @@ namespace API.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Workspace", x => x.Id);
+                    table.PrimaryKey("PK_Workspaces", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Workspace_Companies_CompanyId",
+                        name: "FK_Workspaces_Companies_CompanyId",
                         column: x => x.CompanyId,
                         principalTable: "Companies",
                         principalColumn: "Id",
@@ -98,9 +98,9 @@ namespace API.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_AccountWorkspace_Workspace_WorkspaceId",
+                        name: "FK_AccountWorkspace_Workspaces_WorkspaceId",
                         column: x => x.WorkspaceId,
-                        principalTable: "Workspace",
+                        principalTable: "Workspaces",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -121,8 +121,8 @@ namespace API.Migrations
                 column: "WorkspaceId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Workspace_CompanyId",
-                table: "Workspace",
+                name: "IX_Workspaces_CompanyId",
+                table: "Workspaces",
                 column: "CompanyId");
         }
 
@@ -135,7 +135,7 @@ namespace API.Migrations
                 name: "Accounts");
 
             migrationBuilder.DropTable(
-                name: "Workspace");
+                name: "Workspaces");
 
             migrationBuilder.DropTable(
                 name: "Roles");
