@@ -59,19 +59,20 @@ namespace API.Controllers
         private Models.Account Authenticate(UserLogin userLogin)
         {
             //INMEMORY USER
-            Models.Account NOOB = new Models.Account() { Name = "noob", Password = "noob", Email = "Noob@Noob.com", Role = new Models.Role() { Name = "noob" } };
+            Models.Account NOOB = new Models.Account() { Name = "noob", Password = "noob", Email = "noob@noob.com", Role = new Models.Role() { Name = "noob" } };
             Models.Account ADMIN = new Models.Account() { Name = "admin", Password = "admin", Email = "admin@admin.com", Role = new Models.Role() { Name = "Admin" } };
             //
             // IF USERINDB() return ACCOUNT MODEL
 
 
-            var currentUser = userLogin.Name == NOOB.Name && userLogin.Password == NOOB.Password;
+            var currentUser = userLogin.Email == NOOB.Email && userLogin.Password == NOOB.Password;
 
             if (currentUser == true)
             {
                 return NOOB;
             }
-            else if (userLogin.Name == ADMIN.Name){
+            else if (userLogin.Email == ADMIN.Email)
+            {
                 return ADMIN;
             }
 
@@ -81,7 +82,7 @@ namespace API.Controllers
 
     public class UserLogin
     {
-        public string Name { get; set; }
+        public string Email { get; set; }
         public string Password { get; set; }
     }
 }
