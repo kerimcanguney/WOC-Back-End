@@ -75,7 +75,7 @@ namespace API.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "AccountWorkspace",
+                name: "AccountWorkspaces",
                 columns: table => new
                 {
                     AccountId = table.Column<int>(type: "int", nullable: false),
@@ -84,21 +84,21 @@ namespace API.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AccountWorkspace", x => new { x.AccountId, x.WorkspaceId });
+                    table.PrimaryKey("PK_AccountWorkspaces", x => new { x.AccountId, x.WorkspaceId });
                     table.ForeignKey(
-                        name: "FK_AccountWorkspace_Accounts_AccountId",
+                        name: "FK_AccountWorkspaces_Accounts_AccountId",
                         column: x => x.AccountId,
                         principalTable: "Accounts",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_AccountWorkspace_Roles_RoleId",
+                        name: "FK_AccountWorkspaces_Roles_RoleId",
                         column: x => x.RoleId,
                         principalTable: "Roles",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_AccountWorkspace_Workspaces_WorkspaceId",
+                        name: "FK_AccountWorkspaces_Workspaces_WorkspaceId",
                         column: x => x.WorkspaceId,
                         principalTable: "Workspaces",
                         principalColumn: "Id",
@@ -111,13 +111,13 @@ namespace API.Migrations
                 column: "RoleId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_AccountWorkspace_RoleId",
-                table: "AccountWorkspace",
+                name: "IX_AccountWorkspaces_RoleId",
+                table: "AccountWorkspaces",
                 column: "RoleId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_AccountWorkspace_WorkspaceId",
-                table: "AccountWorkspace",
+                name: "IX_AccountWorkspaces_WorkspaceId",
+                table: "AccountWorkspaces",
                 column: "WorkspaceId");
 
             migrationBuilder.CreateIndex(
@@ -129,7 +129,7 @@ namespace API.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "AccountWorkspace");
+                name: "AccountWorkspaces");
 
             migrationBuilder.DropTable(
                 name: "Accounts");

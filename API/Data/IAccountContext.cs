@@ -10,6 +10,7 @@ namespace API.Data
     public interface IAccountContext
     {
         public DbSet<Account> Accounts { get; set; }
+        public DbSet<AccountWorkspace> AccountWorkspaces { get; set; }
         public DbSet<Company> Companies { get; set; }
         public DbSet<Workspace> Workspaces { get; set; }
         public DbSet<Role> Roles { get; set; }

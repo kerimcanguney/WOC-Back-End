@@ -62,7 +62,7 @@ namespace API.Migrations
 
                     b.HasIndex("WorkspaceId");
 
-                    b.ToTable("AccountWorkspace");
+                    b.ToTable("AccountWorkspaces");
                 });
 
             modelBuilder.Entity("API.Models.Company", b =>

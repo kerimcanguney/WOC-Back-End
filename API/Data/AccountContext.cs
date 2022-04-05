@@ -22,6 +22,7 @@ namespace API.Data
             optionsBuilder.UseSqlServer(@"Server=.\SQLEXPRESS;Database=PIMAccounts;Trusted_Connection=True;");
         }*/
         public DbSet<Account> Accounts { get; set; }
+        public DbSet<AccountWorkspace> AccountWorkspaces { get; set; }
         public DbSet<Company> Companies { get; set; }
         public DbSet<Workspace> Workspaces { get; set; }
         public DbSet<Role> Roles { get; set; }
