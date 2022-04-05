@@ -22,8 +22,6 @@ namespace API.Controllers
         [HttpGet]
         public IEnumerable<AccountViewModel> Get()
         {
-            Account acc = new() { Name = "test1", Email = "email1", Password = "password1", Role = new() {Name = "role1" } };
-            _service.RegisterAccount(acc);
             List<Account> accs = _service.GetAccounts();
             List<AccountViewModel> avms = new();
             for (int i = 0; i < accs.Count(); i++)
@@ -32,12 +30,29 @@ namespace API.Controllers
             }
             return avms;
         }
-        [HttpPost]
+        [HttpPost("Login")]
         public AccountViewModel Login(string email, string password)
         {
             Account a = _service.LoginAccount(email,password);
             string token = "token"; //Generate token
             return new(a,token);
+        }
+        [HttpPost("Register")]
+        public AccountViewModel Register(string name, string email, string password)
+        {
+            //Account acc = new() { Name = "test1", Email = "email1", Password = "password1" };
+            //_service.RegisterAccount(acc);
+            Account a = new() { Name = name, Email = email, Password = password};
+            bool registered = _service.RegisterAccount(a);
+            if (registered)
+            {
+                string token = "token"; //Generate token
+                return new(a, token);
+            }
+            else
+            {
+                return null; //invalid request -> no account created
+            }
         }
     }
 }

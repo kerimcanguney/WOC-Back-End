@@ -54,6 +54,7 @@ namespace API.Services
         {
             if (!DoesEmailExist(account.Email))
             {
+                account.Role = _context.Roles.Find(1); //set standard role
                 return InsertAccount(account);
             }
             else

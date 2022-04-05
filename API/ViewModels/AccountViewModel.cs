@@ -26,9 +26,12 @@ namespace API.ViewModels
                 Role = new(account.Role);
             }
             Workspaces = new();
-            for (int i = 0; i < account.Workspaces.Count; i++)
+            if (account.Workspaces != null)
             {
-                Workspaces.Add(new(account.Workspaces[i].Workspace));
+                for (int i = 0; i < account.Workspaces.Count; i++)
+                {
+                    Workspaces.Add(new(account.Workspaces[i].Workspace));
+                }
             }
         }
         public AccountViewModel(Account account, string token)
@@ -36,12 +39,18 @@ namespace API.ViewModels
             Id = account.Id;
             Name = account.Name;
             Email = account.Email;
-            Password = account.Password;
-            Role = new(account.Role);
-            Workspaces = new();
-            for (int i = 0; i < account.Workspaces.Count; i++)
+            Password = account.Password; 
+            if (account.Role != null)
             {
-                Workspaces.Add(new(account.Workspaces[i].Workspace));
+                Role = new(account.Role);
+            }
+            Workspaces = new();
+            if (account.Workspaces != null)
+            {
+                for (int i = 0; i < account.Workspaces.Count; i++)
+                {
+                    Workspaces.Add(new(account.Workspaces[i].Workspace));
+                }
             }
             Token = token;
         }
