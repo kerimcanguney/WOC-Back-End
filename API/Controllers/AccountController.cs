@@ -42,12 +42,28 @@ namespace API.Controllers
         public AccountViewModel Login(string email, string password)
         {
             Account a = _service.LoginAccount(email,password);
-            string token = "token"; //Generate token
-            token = Generate(a)
-            
-            return new(a,token);
+            string token = GenerateToken(a);
+            return new(a, token);
         }
-        private string Generate(Account account)
+        
+        [HttpPost("Register")]
+        public AccountViewModel Register(string name, string email, string password)
+        {
+            //Account acc = new() { Name = "test1", Email = "email1", Password = "password1" };
+            //_service.RegisterAccount(acc);
+            Account a = new() { Name = name, Email = email, Password = password};
+            bool registered = _service.RegisterAccount(a);
+            if (registered)
+            {
+                string token =  GenerateToken(a);
+                return new(a, token);
+            }
+            else
+            {
+                return null; //invalid request -> no account created
+            }
+        }
+        private string GenerateToken(Account account)
         {
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
@@ -79,27 +95,9 @@ namespace API.Controllers
             {
                 Name = userClaims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value,
                 Email = userClaims.FirstOrDefault(x => x.Type == ClaimTypes.Email)?.Value,
-                Role = new Role() { Name = userClaims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value }
+                //Role = new Role() { Name = userClaims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value }
 
             };
-        }
-        [HttpPost("Register")]
-        public AccountViewModel Register(string name, string email, string password)
-        {
-            //Account acc = new() { Name = "test1", Email = "email1", Password = "password1" };
-            //_service.RegisterAccount(acc);
-            Account a = new() { Name = name, Email = email, Password = password};
-            bool registered = _service.RegisterAccount(a);
-            if (registered)
-            {
-                string token = "token"; //Generate token
-                token = Generate(new Account() { Name = name, Email = email, Password = password });
-                return new(a, token);
-            }
-            else
-            {
-                return null; //invalid request -> no account created
-            }
         }
     }
 }

@@ -17,7 +17,10 @@ namespace API.ViewModels
         public string Token { get; set; }
         public AccountViewModel(Account account)
         {
-            Id = account.Id;
+            if (account.Id <= 0)
+            {
+                Id = account.Id;
+            }
             Name = account.Name;
             Email = account.Email;
             Password = account.Password;
@@ -36,7 +39,10 @@ namespace API.ViewModels
         }
         public AccountViewModel(Account account, string token)
         {
-            Id = account.Id;
+            if (account.Id <= 0)
+            {
+                Id = account.Id;
+            }
             Name = account.Name;
             Email = account.Email;
             Password = account.Password; 

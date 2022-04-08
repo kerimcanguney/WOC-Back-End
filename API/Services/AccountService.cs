@@ -64,18 +64,26 @@ namespace API.Services
         }
         public Account LoginAccount(string email, string password)
         {
-            Account acc = _context.Accounts.Where(a => a.Email == email)
+            Account acc;
+            try
+            {
+                acc = _context.Accounts.Where(a => a.Email == email)
                 .Include(a => a.Role)
                 .Include(a => a.Workspaces)
                 .ThenInclude(a => a.Workspace)
                 .Single();
+            }
+            catch (Exception)
+            {
+                throw new Exception("Email not found");
+            }
             if (acc.Password == password) //Check password
             {
                 return acc;
             }
             else
             {
-                return null;
+                throw new Exception("Password incorrect");
             }
         }
     }
