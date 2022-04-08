@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace API.Migrations
 {
     [DbContext(typeof(AccountContext))]
-    [Migration("20220329100516_initial")]
+    [Migration("20220405085316_initial")]
     partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -64,7 +64,7 @@ namespace API.Migrations
 
                     b.HasIndex("WorkspaceId");
 
-                    b.ToTable("AccountWorkspace");
+                    b.ToTable("AccountWorkspaces");
                 });
 
             modelBuilder.Entity("API.Models.Company", b =>

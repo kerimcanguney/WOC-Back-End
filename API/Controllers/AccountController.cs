@@ -1,6 +1,7 @@
 ﻿using API.Data;
 using API.Models;
 using API.Services;
+using API.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -27,19 +28,24 @@ namespace API.Controllers
             _config = config; ;
         }
         [HttpGet]
-        public IEnumerable<Account> Get()
+        public IEnumerable<AccountViewModel> Get()
         {
-            //Account acc = new() { Name = "test1", Email = "email1", Password = "password1", Role = new() {Name = "role1" } };
-            //_service.RegisterAccount(acc);
-            return _service.GetAccounts();
+            List<Account> accs = _service.GetAccounts();
+            List<AccountViewModel> avms = new();
+            for (int i = 0; i < accs.Count(); i++)
+            {
+                avms.Add(new(accs[i]));
+            }
+            return avms;
         }
-
         [HttpPost("Login")]
-        public string Login(string email, string password)
+        public AccountViewModel Login(string email, string password)
         {
-            Account loginAccount = _service.LoginAccount(email, password);
-
-            return Generate(loginAccount);
+            Account a = _service.LoginAccount(email,password);
+            string token = "token"; //Generate token
+            token = Generate(a)
+            
+            return new(a,token);
         }
         private string Generate(Account account)
         {
@@ -78,9 +84,22 @@ namespace API.Controllers
             };
         }
         [HttpPost("Register")]
-        public string Register(string username, string email, string password)
+        public AccountViewModel Register(string name, string email, string password)
         {
-            return Generate(new Account() { Name = username, Email = email, Password = password });
+            //Account acc = new() { Name = "test1", Email = "email1", Password = "password1" };
+            //_service.RegisterAccount(acc);
+            Account a = new() { Name = name, Email = email, Password = password};
+            bool registered = _service.RegisterAccount(a);
+            if (registered)
+            {
+                string token = "token"; //Generate token
+                token = Generate(new Account() { Name = name, Email = email, Password = password });
+                return new(a, token);
+            }
+            else
+            {
+                return null; //invalid request -> no account created
+            }
         }
     }
 }
