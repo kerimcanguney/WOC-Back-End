@@ -17,6 +17,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Net.Http.Headers;
 
 namespace API
 {
@@ -49,6 +50,19 @@ namespace API
             services.AddDbContext<IAccountContext, AccountContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("PIMAccounts")));
             //services.AddSingleton<IAccountService>();//////////////////////////////
+            services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(
+                    policy =>
+                    {
+                        policy.WithOrigins("http://localhost:3000")
+                                                            .AllowAnyHeader()
+                                                            .AllowCredentials()
+                                                            .AllowAnyMethod()
+                        ;
+                    });
+            });
+
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
@@ -69,7 +83,7 @@ namespace API
             app.UseHttpsRedirection();
 
             app.UseRouting();
-
+            app.UseCors();
             app.UseAuthentication();
 
             app.UseAuthorization();
