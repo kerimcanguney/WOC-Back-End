@@ -6,7 +6,7 @@ using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-
+using API.Models;
 namespace API.Controllers
 {
     [Route("api/[controller]")]
@@ -35,7 +35,7 @@ namespace API.Controllers
             return "No token generated";
         }
 
-        private string Generate(Models.Account account)
+        private string Generate(Account account)
         {
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
@@ -56,7 +56,7 @@ namespace API.Controllers
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
-        private Models.Account Authenticate(UserLogin userLogin)
+        private Account Authenticate(UserLogin userLogin)
         {
             //INMEMORY USER
             Models.Account NOOB = new Models.Account() { Name = "noob", Password = "noob", Email = "noob@noob.com", Role = new Models.Role() { Name = "noob" } };
