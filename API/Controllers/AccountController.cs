@@ -20,12 +20,12 @@ namespace API.Controllers
     public class AccountController : ControllerBase
     {
         private readonly IAccountService _service;
-        private IConfiguration _config;
+        private readonly IJWTService _jwt;
 
         public AccountController(IAccountContext context, IConfiguration config)
         {
             _service = new AccountService(context);
-            _config = config; ;
+            _jwt = new JWTService(config);
         }
         [HttpGet]
         public IEnumerable<AccountViewModel> Get()
@@ -43,7 +43,7 @@ namespace API.Controllers
         public AccountViewModel Login(string email, string password)
         {
             Account a = _service.LoginAccount(email,password);
-            string token = GenerateToken(a);
+            string token = _jwt.GenerateToken(a);
             return new(a, token);
         }
         
@@ -56,49 +56,13 @@ namespace API.Controllers
             bool registered = _service.RegisterAccount(a);
             if (registered)
             {
-                string token =  GenerateToken(a);
+                string token =  _jwt.GenerateToken(a);
                 return new(a, token);
             }
             else
             {
                 return null; //invalid request -> no account created
             }
-        }
-        private string GenerateToken(Account account)
-        {
-            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
-            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
-
-            var claims = new[]
-            {
-                new Claim(ClaimTypes.NameIdentifier, account.Name),
-                new Claim(ClaimTypes.Email, account.Email),
-                //new Claim(ClaimTypes.Role, account.Role.Name) 
-            };
-
-            var token = new JwtSecurityToken(_config["Jwt:Issuer"],
-                _config["Jwt:Audience"],
-                claims,
-                expires: DateTime.Now.AddMinutes(15),
-                signingCredentials: credentials);
-
-            return new JwtSecurityTokenHandler().WriteToken(token);
-        }
-        private Account GetCurrentUserViaHttpContext()
-        {
-            var identity = HttpContext.User.Identity as ClaimsIdentity;
-
-            if (identity == null) return null;
-
-            var userClaims = identity.Claims;
-
-            return new Account
-            {
-                Name = userClaims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value,
-                Email = userClaims.FirstOrDefault(x => x.Type == ClaimTypes.Email)?.Value,
-                //Role = new Role() { Name = userClaims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value }
-
-            };
         }
     }
 }

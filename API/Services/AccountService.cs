@@ -73,9 +73,9 @@ namespace API.Services
                 .ThenInclude(a => a.Workspace)
                 .Single();
             }
-            catch (Exception)
+            catch (InvalidOperationException)
             {
-                throw new Exception("Email not found");
+                throw new InvalidOperationException("Email not found");
             }
             if (acc.Password == password) //Check password
             {
@@ -83,7 +83,7 @@ namespace API.Services
             }
             else
             {
-                throw new Exception("Password incorrect");
+                throw new InvalidOperationException("Password incorrect");
             }
         }
     }
