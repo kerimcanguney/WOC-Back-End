@@ -21,6 +21,7 @@ namespace API.Services
                 .Include(a => a.Role)
                 .Include(a => a.Workspaces)
                 .ThenInclude(a => a.Workspace)
+                .ThenInclude(a => a.Company)
                 .ToList();
         }
         public Account GetAccountById(int id)
