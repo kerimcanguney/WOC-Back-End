@@ -109,5 +109,38 @@ namespace API.Services
                 .ThenInclude(w => w.Account)
                 .ToList();
         }
+
+        public List<JoinRequest> GetJoinRequests()
+        {
+            return _context.JoinRequests
+                .Include(jr => jr.Account)
+                .Include(jr => jr.Workspace)
+                .ToList();
+        }
+        public bool Join(int userId, int workspaceId)
+        {
+            try
+            {
+                //Check if exists (acc/ws) //Check if account is already in workspace
+                _context.JoinRequests.Add(new() { Account = _context.Accounts.Find(userId), IsAccepted = false, Workspace = _context.Workspaces.Find(workspaceId) });
+                _context.SaveChanges();
+                return true;
+            }
+            catch (InvalidOperationException)
+            {
+                throw new InvalidOperationException("Could not create joinrequest");
+            }
+        }
+        public bool AcceptJoinRequest(int userId, int workspaceId)
+        {
+            JoinRequest joinRequest = _context.JoinRequests
+                .Single(jr => jr.AccountId == userId && jr.WorkspaceId == workspaceId);
+            joinRequest.IsAccepted = true;
+            _context.JoinRequests
+                .Update(joinRequest);
+            _context.AccountWorkspaces.Add(new() { Account = _context.Accounts.Find(userId), Workspace = _context.Workspaces.Find(workspaceId) });
+            _context.SaveChanges();
+            return true;
+        }
     }
 }

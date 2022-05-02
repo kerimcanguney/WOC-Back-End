@@ -34,5 +34,28 @@ namespace API.Controllers
             }
             return wsvms;
         }
+        [HttpGet("JoinRequests")]
+        public IEnumerable<WorkspaceJoinRequestsViewModel> JoinRequests()
+        {
+            List<JoinRequest> jr = _service.GetJoinRequests();
+            List<WorkspaceJoinRequestsViewModel> jrvms = new();
+            for (int i = 0; i < jr.Count(); i++)
+            {
+                jrvms.Add(new(jr[i]));
+            }
+            return jrvms;
+        }
+        //Create a join request to join a workspace
+        [HttpPost("JoinWorkspace")]
+        public bool JoinWorkspace(int userId, int workspaceId)
+        {
+            return _service.Join(userId,workspaceId);
+        }
+        //Accept a joinrequest
+        [HttpPost("AcceptJoinRequest")]
+        public bool AcceptJoinRequest(int userId, int workspaceId)
+        {
+            return _service.AcceptJoinRequest(userId, workspaceId);
+        }
     }
 }
