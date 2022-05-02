@@ -4,13 +4,9 @@ using API.Services;
 using API.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
-using System.Security.Claims;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace API.Controllers
@@ -27,20 +23,26 @@ namespace API.Controllers
             _service = new AccountService(context);
             _jwt = new JWTService(config);
         }
-        [HttpGet]
-        public IEnumerable<AccountViewModel> Get()
+        [HttpGet("Accounts")]
+        public IEnumerable<AccountAccountsViewModel> Accounts()
         {
             List<Account> accs = _service.GetAccounts();
-            List<AccountViewModel> avms = new();
+            List<AccountAccountsViewModel> avms = new();
             for (int i = 0; i < accs.Count(); i++)
             {
                 avms.Add(new(accs[i]));
             }
             return avms;
         }
-        
+        [HttpGet("Account")]
+        public AccountAccountViewModel Account(int id)
+        {
+            Account a = _service.GetAccountById(id);
+            return new(a);
+        }
+
         [HttpPost("Login")]
-        public AccountViewModel Login(string email, string password)
+        public AccountLoginViewModel Login(string email, string password)
         {
             Account a = _service.LoginAccount(email,password);
             string token = _jwt.GenerateToken(a);
@@ -48,13 +50,11 @@ namespace API.Controllers
         }
         
         [HttpPost("Register")]
-        public AccountViewModel Register(string name, string email, string password)
+        public AccountRegisterViewModel Register(string name, string email, string password)
         {
-            //Account acc = new() { Name = "test1", Email = "email1", Password = "password1" };
-            //_service.RegisterAccount(acc);
-            Account a = new() { Name = name, Email = email, Password = password};
-            bool registered = _service.RegisterAccount(a);
-            if (registered)
+            //Account a = new() { Name = name, Email = email, Password = password};
+            Account a = _service.RegisterAccount(new() { Name = name, Email = email, Password = password });
+            if (a != null)
             {
                 string token =  _jwt.GenerateToken(a);
                 return new(a, token);
