@@ -10,6 +10,7 @@ namespace API.Services
     public interface IJWTService
     {
         public string GenerateToken(Account account);
-        public Account ValidateToken(ClaimsIdentity HttpContextIdentity);
+        public bool ValidateToken(string token);
+        public string GetClaim(string token, string claimType);
     }
 }

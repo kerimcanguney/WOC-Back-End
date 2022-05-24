@@ -11,9 +11,11 @@ namespace API.Services
     public class AccountService : IAccountService , IWorkspaceService
     {
         private readonly IAccountContext _context;
+        private readonly IEncryptionService _encrypt;
         public AccountService(IAccountContext context)
         {
             _context = context;
+            _encrypt = new EncryptionService();
         }
         public bool InsertAccount(Account account)
         {
@@ -61,15 +63,16 @@ namespace API.Services
         {
             if (!DoesEmailExist(account.Email))
             {
-                account.Role = _context.Roles.Find(1); //set standard role
-                if (InsertAccount(account))
-                {
-                    return GetAccountById(account.Id);
-                }
-                else
-                {
-                    return null;
-                }
+                //Encypt password
+                Account a = new();
+                a.Name = account.Name;
+                a.Email = account.Email;
+                var hashsalt = _encrypt.EncryptPassword(account.Password);
+                a.Password = hashsalt.Hash;
+                a.StoredSalt = hashsalt.Salt;
+
+                a.Role = _context.Roles.Find(1); //set standard role
+                return a;
             }
             else
             {
@@ -78,22 +81,23 @@ namespace API.Services
         }
         public Account LoginAccount(string email, string password)
         {
-            Account acc;
+            bool doesPasswordMatch = false;
             try
             {
-                acc = _context.Accounts.Where(a => a.Email == email)
-                .Include(a => a.Role)
-                .Include(a => a.Workspaces)
-                .ThenInclude(a => a.Workspace)
-                .Single();
+                var account = _context.Accounts.FirstOrDefault(a => a.Email == email);
+                doesPasswordMatch = _encrypt.VerifyPassword(password, account.StoredSalt, account.Password);
             }
             catch (InvalidOperationException)
             {
-                throw new InvalidOperationException("Email not found");
+                throw new InvalidOperationException("Could not find account");
             }
-            if (acc.Password == password) //Check password
+            if (doesPasswordMatch)
             {
-                return acc;
+                return _context.Accounts.Where(a => a.Email == email)
+                    .Include(a => a.Role)
+                    .Include(a => a.Workspaces)
+                    .ThenInclude(a => a.Workspace)
+                    .Single();
             }
             else
             {

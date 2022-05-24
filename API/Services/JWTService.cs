@@ -16,6 +16,8 @@ namespace API.Services
     public class JWTService : IJWTService
     {
         private IConfiguration _config;
+        public static readonly string ClaimsName = "Name";
+        public static readonly string ClaimsEmail = "Email";
         public JWTService(IConfiguration config)
         {
             _config = config;
@@ -27,35 +29,54 @@ namespace API.Services
 
             var claims = new[]
             {
-                new Claim(ClaimTypes.NameIdentifier, account.Name),
-                new Claim(ClaimTypes.Email, account.Email),
-                //new Claim(ClaimTypes.Role, account.Role.Name) 
+                new Claim(ClaimsName, account.Name),
+                new Claim(ClaimsEmail, account.Email),
+                //new Claim(ClaimsRole, account.Role.Name)
             };
 
-            var token = new JwtSecurityToken(_config["Jwt:Issuer"],
-                _config["Jwt:Audience"],
-                claims,
-                expires: DateTime.Now.AddMinutes(15),
-                signingCredentials: credentials);
-
-            return new JwtSecurityTokenHandler().WriteToken(token);
-        }
-        public Account ValidateToken(ClaimsIdentity HttpContextIdentity)
-        {
-            //var identity = HttpContext.User.Identity as ClaimsIdentity;
-            var identity = HttpContextIdentity;
-
-            if (identity == null) return null;
-
-            var userClaims = identity.Claims;
-
-            return new Account
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var tokenDescriptor = new SecurityTokenDescriptor
             {
-                Name = userClaims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value,
-                Email = userClaims.FirstOrDefault(x => x.Type == ClaimTypes.Email)?.Value,
-                //Role = new Role() { Name = userClaims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value }
-
+                Subject = new ClaimsIdentity(claims),
+                Expires = DateTime.Now.AddDays(7),
+                Issuer = _config["Jwt:Issuer"],
+                Audience = _config["Jwt:Audience"],
+                SigningCredentials = credentials
             };
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+
+            return tokenHandler.WriteToken(token);
+        }
+        public bool ValidateToken(string token)
+        {
+            var securityKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_config["Jwt:Key"]));
+            var tokenHandler = new JwtSecurityTokenHandler();
+
+            try
+            {
+                tokenHandler.ValidateToken(token, new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidIssuer = _config["Jwt:Issuer"],
+                    ValidAudience = _config["Jwt:Audience"],
+                    IssuerSigningKey = securityKey
+                }, out SecurityToken validatedToken); ;
+            }
+            catch
+            {
+
+                return false;
+            }
+            return true;
+        }
+        public string GetClaim(string token, string claimType)
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var securityToken = tokenHandler.ReadToken(token) as JwtSecurityToken;
+            var stringClaimValue = securityToken.Claims.First(claim => claim.Type == claimType).Value;
+            return stringClaimValue;
         }
     }
 }
