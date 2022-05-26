@@ -10,7 +10,8 @@ namespace API.Services
     {
         public List<Account> GetAccounts();
         public Account GetAccountById(int id);
-        public Account RegisterAccount(Account account);
-        public Account LoginAccount(string email, string password);
+        public Account GetAccount(string email);
+        public bool RegisterAccount(string name, string email, string password);
+        public bool LoginAccount(string email, string password);
     }
 }
