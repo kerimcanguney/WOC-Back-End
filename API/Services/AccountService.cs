@@ -58,51 +58,46 @@ namespace API.Services
                 .ThenInclude(a => a.Company)
                 .SingleOrDefault(a => a.Id == id);
         }
-        //Register
-        public Account RegisterAccount(Account account)
+        public Account GetAccount(string email)
         {
-            if (!DoesEmailExist(account.Email))
-            {
-                //Encypt password
-                Account a = new();
-                a.Name = account.Name;
-                a.Email = account.Email;
-                var hashsalt = _encrypt.EncryptPassword(account.Password);
-                a.Password = hashsalt.Hash;
-                a.StoredSalt = hashsalt.Salt;
-
-                a.Role = _context.Roles.Find(1); //set standard role
-                return a;
-            }
-            else
-            {
-                return null;
-            }
-        }
-        public Account LoginAccount(string email, string password)
-        {
-            bool doesPasswordMatch = false;
             try
             {
-                var account = _context.Accounts.FirstOrDefault(a => a.Email == email);
-                doesPasswordMatch = _encrypt.VerifyPassword(password, account.StoredSalt, account.Password);
+                Account acc = _context.Accounts.Where(a => a.Email == email)
+                    .Include(a => a.Role)
+                    .Single();
+                return acc;
             }
             catch (InvalidOperationException)
             {
                 throw new InvalidOperationException("Could not find account");
             }
-            if (doesPasswordMatch)
+        }
+        //Register
+        public bool RegisterAccount(string name, string email, string password)
+        {
+            if (!DoesEmailExist(email))
             {
-                return _context.Accounts.Where(a => a.Email == email)
-                    .Include(a => a.Role)
-                    .Include(a => a.Workspaces)
-                    .ThenInclude(a => a.Workspace)
-                    .Single();
+                //Encypt password
+                Account a = new();
+                a.Name = name;
+                a.Email = email;
+                var hashsalt = _encrypt.EncryptPassword(password);
+                a.Password = hashsalt.Hash;
+                a.StoredSalt = hashsalt.Salt;
+
+                a.Role = _context.Roles.Find(1); //set standard role
+                return InsertAccount(a);
             }
             else
             {
-                throw new InvalidOperationException("Password incorrect");
+                return false;
             }
+        }
+        public bool LoginAccount(string email, string password)
+        {
+            var account = _context.Accounts.FirstOrDefault(a => a.Email == email);
+            var doesPasswordMatch = _encrypt.VerifyPassword(password, account.StoredSalt, account.Password);
+            return doesPasswordMatch;
         }
 
         public List<Workspace> GetWorkspaces()

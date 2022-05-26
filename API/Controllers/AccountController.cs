@@ -23,8 +23,8 @@ namespace API.Controllers
             _service = new AccountService(context);
             _jwt = new JWTService(config);
         }
-        [HttpGet("Accounts")]
-        public IEnumerable<AccountAccountsViewModel> Accounts()
+        [HttpGet]
+        public IEnumerable<AccountAccountsViewModel> Get()
         {
             List<Account> accs = _service.GetAccounts();
             List<AccountAccountsViewModel> avms = new();
@@ -34,7 +34,7 @@ namespace API.Controllers
             }
             return avms;
         }
-        [HttpGet("Account")]
+        [HttpGet("{id}")]
         public AccountAccountViewModel Account(int id)
         {
             Account a = _service.GetAccountById(id);
@@ -42,26 +42,30 @@ namespace API.Controllers
         }
 
         [HttpPost("Login")]
-        public AccountLoginViewModel Login(string email, string password)
+        public TokenViewModel Login(string email, string password)
         {
-            Account a = _service.LoginAccount(email,password);
-            string token = _jwt.GenerateToken(a);
-            return new(a, token);
+            if (!_service.LoginAccount(email, password))
+            {
+                throw new InvalidOperationException("Invalid info");
+            }
+            Account a = _service.GetAccount(email);
+            string token = _jwt.GenerateToken(a); //Generate token
+            return new(token);
         }
         
         [HttpPost("Register")]
-        public AccountRegisterViewModel Register(string name, string email, string password)
+        public TokenViewModel Register(string name, string email, string password)
         {
-            //Account a = new() { Name = name, Email = email, Password = password};
-            Account a = _service.RegisterAccount(new() { Name = name, Email = email, Password = password });
-            if (a != null)
+            bool registered = _service.RegisterAccount(name, email, password);
+            if (registered)
             {
-                string token =  _jwt.GenerateToken(a);
-                return new(a, token);
+                Account a = _service.GetAccount(email);
+                string token = _jwt.GenerateToken(a); //Generate token
+                return new(token);
             }
             else
             {
-                return null; //invalid request -> no account created
+                throw new InvalidOperationException("Invalid info");
             }
         }
     }
