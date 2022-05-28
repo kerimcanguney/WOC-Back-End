@@ -13,6 +13,15 @@ services:
       - type: volume
         source: database
         target: /var/opt/mssql
+
+  mongodb:
+    container_name: mongodb
+    image: mongo
+    ports:
+        - "27017:27017"
+    volumes:
+        - './data:/data/db'
+
   api:
     container_name: WOC_API
     image: ${DOCKER_REGISTRY-}api
@@ -21,6 +30,7 @@ services:
       dockerfile: Dockerfile
     depends_on:
       - database
+      - mongodb
     ports:
       - "5000:80"
       - "5001:443"

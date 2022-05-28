@@ -9,10 +9,16 @@ namespace API.Services
         private readonly IMongoCollection<Product> _products;
         public ProductService()
         {
-            MongoClient dbClient = new MongoClient("mongodb://localhost:27017");
+            var settings = MongoClientSettings.FromConnectionString("mongodb://host.docker.internal:27017");
+            settings.SslSettings = new SslSettings()
+            {
+                EnabledSslProtocols = System.Security.Authentication.SslProtocols.Tls12
+            };
+            MongoClient dbClient = new MongoClient(settings);
+            //MongoClient dbClient = new MongoClient("mongodb://host.docker.internal:27017");
             var db = dbClient.GetDatabase("products");
             _products = db.GetCollection<Product>("products");
-
+            ProductSeed.SeedData(_products);
         }
         public List<Product> GetProducts()
         {
