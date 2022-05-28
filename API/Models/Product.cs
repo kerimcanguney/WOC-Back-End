@@ -11,6 +11,10 @@ namespace API.Models
             this.Type = Type.ToString();
             this.Category = Category.ToString();
         }
+        public Product()
+        {
+
+        }
         [BsonId]
         [BsonRepresentation(MongoDB.Bson.BsonType.ObjectId)]
         public string Id { get; set; }
