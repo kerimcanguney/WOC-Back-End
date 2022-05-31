@@ -28,5 +28,9 @@ docker build -t wocapi .
 ## Run image (op port 5001)
 docker run -d -e ASPNETCORE_ENVIRONMENT=Development –e ASPNETCORE_URLS=https://+:443;http://+:80 –e ASPNETCORE_HTTPS_PORT=5000  -e ASPNETCORE_Kestrel__Certificates__Default__Password=mypass123  -e ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx -v %USERPROFILE%/.aspnet/https:/https:ro -p 5000:80 -p 5001:443 --name woc-api wocapi
 
-### Pull image van dockerhub (!TO do)
-docker pull "dockerhubreponame"
+### Pull image van dockerhub en run back-end
+docker pull kerimcan/woc-api
+
+!Zorg ervoor dat de mongodb en sql containers ook draaien
+
+docker run -d -e ASPNETCORE_ENVIRONMENT=Development –e ASPNETCORE_URLS=https://+:443;http://+:80 –e ASPNETCORE_HTTPS_PORT=5000  -e ASPNETCORE_Kestrel__Certificates__Default__Password=mypass123  -e ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx -v %USERPROFILE%/.aspnet/https:/https:ro -p 5000:80 -p 5001:443 --name woc-api kerimcan/woc-api
