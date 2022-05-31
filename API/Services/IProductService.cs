@@ -10,5 +10,6 @@ namespace API.Services
         Product AddProduct(Product product);
         Product? GetProduct(string id);
         void updateProduct(string id, Product product);
+        void deleteProduct(string id);
     }
 }

@@ -20,6 +20,12 @@ namespace API.Services
         }
         private static IEnumerable<Product> GetPreconfiguredProducts()
         {
+            List<Info> info1 = new();
+            info1.Add(new Info() { Name = "Calorieen", Value = "20kcal" });
+            info1.Add(new Info() { Name = "Gewicht", Value = "200g" });
+            List<Info> info2 = new();
+            info2.Add(new Info() { Name = "Calorieen", Value = "10kcal" });
+            info2.Add(new Info() { Name = "Gewicht", Value = "100g" });
             return new List<Product>()
             {
                 new Product()
@@ -27,15 +33,16 @@ namespace API.Services
                     Id = "602d2149e773f2a3990b47f5",
                     Name = "Appel",
                     Type = "Fruit",
-                    Category = "Food"
+                    Category = "Food",
+                    Info = info1
                 },
                 new Product()
                 {
                     Id = "602d2149e773f2a3990b47f6",
-                    Name = "Speakers",
+                    Name = "Banaan",
                     Type = "Fruit",
-                    Category = "Food"
-
+                    Category = "Food",
+                    Info = info2
                 },
             };
         }

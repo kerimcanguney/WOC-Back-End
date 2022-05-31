@@ -41,5 +41,10 @@ namespace API.Services
             var prod = _products.ReplaceOne(x => x.Id == id, product);
             return ;
         }
+        public void deleteProduct(string id)
+        {
+            var prod = _products.DeleteOne(x => x.Id == id);
+            return;
+        }
     }
 }

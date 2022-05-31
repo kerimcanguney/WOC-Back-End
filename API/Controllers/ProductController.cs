@@ -53,5 +53,11 @@ namespace API.Controllers
             _productService.updateProduct(id, product);
             return Ok("Done");
         }
+        [HttpDelete]
+        public IActionResult deleteProduct(string id)
+        {
+            _productService.deleteProduct(id);
+            return Ok("Done");
+        }
     }
 }
