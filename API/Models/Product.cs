@@ -1,5 +1,8 @@
 ﻿using API.ProductModels;
+using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
+using System;
+using System.Collections.Generic;
 
 namespace API.Models
 {
@@ -21,7 +24,7 @@ namespace API.Models
         public string Name { get; set; }
         public string Category { get; set; }
         public string Type { get; set; }
-        public object Info { get; set; }
+        public BsonType Info { get; set; }
 
     }
 }

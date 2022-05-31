@@ -35,6 +35,7 @@ namespace API.Services
                     Name = "Speakers",
                     Type = "Fruit",
                     Category = "Food"
+
                 },
             };
         }

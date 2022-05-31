@@ -39,5 +39,19 @@ namespace API.Controllers
             
             return Ok(_productService.AddProduct(product));
         }
+
+        [HttpGet, Route("/getbyid")]
+        public IActionResult getById(string id)
+        {
+            return Ok(_productService.GetProduct(id));
+        }
+
+        [HttpPut]
+        public IActionResult updateProduct(string id, Product product)
+        {
+            product.Id = id;
+            _productService.updateProduct(id, product);
+            return Ok("Done");
+        }
     }
 }
