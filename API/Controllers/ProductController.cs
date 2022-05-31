@@ -24,7 +24,7 @@ namespace API.Controllers
         [HttpGet]
         public IActionResult GetProducts()
         {
-            return Ok(_productService.GetProducts());
+            return Ok(_productService.GetProducts().ToArray());
         }
         [HttpPost, Route("/post")]
         public IActionResult add(string name, string type, string category)

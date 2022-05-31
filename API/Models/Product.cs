@@ -24,7 +24,13 @@ namespace API.Models
         public string Name { get; set; }
         public string Category { get; set; }
         public string Type { get; set; }
-        public BsonType Info { get; set; }
+        public IList<Info> Info { get; set; }
+
+    }
+    public class Info
+    {
+        public string Name { get; set; }
+        public string Value { get; set; }
 
     }
 }
