@@ -40,6 +40,20 @@ namespace API.Controllers
             Account a = _service.GetAccountById(id);
             return new(a);
         }
+        [HttpGet("Info")]
+        public AccountInfoViewModel Info(string token)
+        {
+            if (!_jwt.ValidateToken(token))
+            {
+                throw new InvalidOperationException("Invalid token");
+            }
+            string email = _jwt.GetClaim(token, "Email");
+            Account a = _service.GetAccount(email);
+            string name = a.Name;
+            string role = a.Role.Name;
+            int id = a.Id;
+            return new(id, name, email, role);
+        }
 
         [HttpPost("Login")]
         public TokenViewModel Login(string email, string password)

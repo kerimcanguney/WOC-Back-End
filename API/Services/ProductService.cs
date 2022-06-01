@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using API.Models;
+using API.ProductModels;
 using MongoDB.Driver;
 namespace API.Services
 {

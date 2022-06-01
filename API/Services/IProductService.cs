@@ -1,4 +1,4 @@
-﻿using API.Models;
+﻿using API.ProductModels;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
