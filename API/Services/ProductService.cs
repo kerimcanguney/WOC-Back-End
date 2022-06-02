@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using API.Models;
+using System.Threading.Tasks;
+using API.ProductModels;
 using MongoDB.Driver;
 namespace API.Services
 {
@@ -28,6 +29,22 @@ namespace API.Services
         {
             _products.InsertOne(product);
             return product;
+        }
+        public Product? GetProduct (string id)
+        {
+            var prod = _products.Find(x => x.Id == id).FirstOrDefault();
+            return prod;
+        }
+
+        public void updateProduct (string id, Product product)
+        {
+            var prod = _products.ReplaceOne(x => x.Id == id, product);
+            return ;
+        }
+        public void deleteProduct(string id)
+        {
+            var prod = _products.DeleteOne(x => x.Id == id);
+            return;
         }
     }
 }
