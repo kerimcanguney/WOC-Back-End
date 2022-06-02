@@ -3,8 +3,11 @@
 Back-end van onze applicatie
 
 Standaard accounts om in te loggen:
+
 email1, pw1 (standaard rol)
+
 email3, pw3 (ook standaard rol)
+
 admin, admin (admin account)
 
 ## Om de back-end te runnen:
