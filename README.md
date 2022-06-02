@@ -16,7 +16,7 @@ docker run -d -p 27017:27017 -v data:/data/db --name mongodb mongo
 
 Start dan de api op met:
 
-docker run -d -e ASPNETCORE_ENVIRONMENT=Development –e ASPNETCORE_URLS=https://+:443;http://+:80 –e ASPNETCORE_HTTPS_PORT=5000  -e ASPNETCORE_Kestrel__Certificates__Default__Password=mypass123  -e ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx -v %USERPROFILE%/.aspnet/https:/https:ro -p 5000:80 -p 5001:443 --name woc-api wocapi
+docker run -d -e ASPNETCORE_ENVIRONMENT=Development –e ASPNETCORE_URLS=https://+:443;http://+:80 –e ASPNETCORE_HTTPS_PORT=5000  -e ASPNETCORE_Kestrel__Certificates__Default__Password=mypass123  -e ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx -v %USERPROFILE%/.aspnet/https:/https:ro -p 5000:80 -p 5001:443 --name woc-api kerimcan/woc-api
 
 Als je nog geen docker image hebt, of andere probleem volg dan de instructies hieronder:
 
