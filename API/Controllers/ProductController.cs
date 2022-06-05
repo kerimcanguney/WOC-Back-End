@@ -186,6 +186,10 @@ namespace API.Controllers
         [HttpPost, Route("/addInfoToTypeInCategory")]
         public IActionResult addInfoToTypeInCategory(string categoryid, string type, string name)
         {
+            if (type == null || type == "" || name == null || name == "")
+            {
+                throw new InvalidOperationException("Invalid info");
+            }
             Category category = _categoryService.GetCategory(categoryid);
             if (category.Types == null) //If types is empty
             {
@@ -197,13 +201,7 @@ namespace API.Controllers
                 {
                     if (category.Types[i].Name == type)
                     {
-                        if (category.Types[i].Info == null)
-                        {
-                            List<Info> info = new();
-                            info.Add(new Info() { Name = name, Value = "" });
-                            category.Types[i].Info = info;
-                        }
-                        else
+                        if (category.Types[i].Info != null)
                         {
                             for (int z = 0; z < category.Types[i].Info.Count; z++)
                             {
@@ -213,6 +211,12 @@ namespace API.Controllers
                                 }
                             }
                             category.Types[i].Info.Add(new Info() { Name = name, Value = "" });
+                        }
+                        if (category.Types[i].Info == null)
+                        {
+                            List<Info> info = new();
+                            info.Add(new Info() { Name = name, Value = "" });
+                            category.Types[i].Info = info;
                         }
                     }
                 }
