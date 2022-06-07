@@ -37,6 +37,10 @@ namespace API.Controllers
 
             //ProductEnums.ProductTypeEnum ProductType = (ProductEnums.ProductTypeEnum)Enum.Parse(typeof(ProductEnums.ProductTypeEnum), type);
             //ProductEnums.ProductCategoryEnum ProductCategory = (ProductEnums.ProductCategoryEnum)Enum.Parse(typeof(ProductEnums.ProductCategoryEnum), category);
+            if (type == null || type == "" || category == null || category == "")
+            {
+                throw new InvalidOperationException("Invalid info");
+            }
 
             List<Category> categories = _categoryService.GetCategories();
             for (int i = 0; i < categories.Count; i++)
@@ -47,7 +51,7 @@ namespace API.Controllers
                     {
                         if (categories[i].Types[z].Name == type) //Check if type name exists in category
                         {
-                            Product product = new() { Name = name, Category = category, Type = type };
+                            Product product = new() { Name = name, Category = category, Type = type, Info = categories[i].Types[z].Info };
                             return Ok(_productService.AddProduct(product));
                         }
                     }
@@ -64,6 +68,10 @@ namespace API.Controllers
         [HttpPut, Route("/updateCategoryOfProduct")]
         public IActionResult updateCategoryOfProduct(string productid, string categoryid)
         {
+            if (categoryid == null || categoryid == "")
+            {
+                throw new InvalidOperationException("Invalid info");
+            }
             Product product = _productService.GetProduct(productid);
             Category category = _categoryService.GetCategory(categoryid);
             if (category.Types == null)
@@ -82,6 +90,10 @@ namespace API.Controllers
         [HttpPut, Route("/updateTypeOfProduct")]
         public IActionResult updateTypeOfProduct(string productid, string categoryid, string type)
         {
+            if (type == null || type == "" || categoryid == null || categoryid == "")
+            {
+                throw new InvalidOperationException("Invalid info");
+            }
             Product product = _productService.GetProduct(productid);
             Category category = _categoryService.GetCategory(categoryid);
             if (category.Types == null)
@@ -129,13 +141,36 @@ namespace API.Controllers
         [HttpPost, Route("/addCategory")]
         public IActionResult addCategory(string name)
         {
+            if (name == null || name == "")
+            {
+                throw new InvalidOperationException("Invalid info");
+            }
+            List<Category> categories = _categoryService.GetCategories();
+            for (int i = 0; i < categories.Count; i++)
+            {
+                if (categories[i].Name == name)
+                {
+                    throw new InvalidOperationException("Name already exists");
+                }
+            }
             Category category = new() { Name = name};
             return Ok(_categoryService.AddCategory(category));
         }
         [HttpPost, Route("/addTypeToCategory")]
         public IActionResult addTypeToCategory(string categoryid, string type)
         {
+            if (type == null || type == "")
+            {
+                throw new InvalidOperationException("Invalid info");
+            }
             Category category = _categoryService.GetCategory(categoryid);
+            for (int i = 0; i < category.Types.Count; i++)
+            {
+                if (category.Types[i].Name == type)
+                {
+                    throw new InvalidOperationException("Name already exists");
+                }
+            }
             if (category.Types == null) //If types is empty
             {
                 List<ProductModels.Type> types = new();
@@ -151,6 +186,10 @@ namespace API.Controllers
         [HttpPost, Route("/addInfoToTypeInCategory")]
         public IActionResult addInfoToTypeInCategory(string categoryid, string type, string name)
         {
+            if (type == null || type == "" || name == null || name == "")
+            {
+                throw new InvalidOperationException("Invalid info");
+            }
             Category category = _categoryService.GetCategory(categoryid);
             if (category.Types == null) //If types is empty
             {
@@ -162,15 +201,22 @@ namespace API.Controllers
                 {
                     if (category.Types[i].Name == type)
                     {
+                        if (category.Types[i].Info != null)
+                        {
+                            for (int z = 0; z < category.Types[i].Info.Count; z++)
+                            {
+                                if (category.Types[i].Info[z].Name == name)
+                                {
+                                    throw new InvalidOperationException("Name already exists");
+                                }
+                            }
+                            category.Types[i].Info.Add(new Info() { Name = name, Value = "" });
+                        }
                         if (category.Types[i].Info == null)
                         {
                             List<Info> info = new();
                             info.Add(new Info() { Name = name, Value = "" });
                             category.Types[i].Info = info;
-                        }
-                        else
-                        {
-                            category.Types[i].Info.Add(new Info() { Name = name, Value = "" });
                         }
                     }
                 }
